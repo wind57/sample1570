@@ -1,0 +1,26 @@
+server:
+  port: 1994
+
+spring:
+  application:
+    name: sample
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+        mode: event
+        strategy: refresh
+      config:
+        enabled: true
+        sources:
+          - name: sample-configmap
+            namespace: sample
+      secrets:
+        enabled: true
+
+management:
+  endpoint:
+    refresh:
+      enabled: true
+    health:
+      enabled: false

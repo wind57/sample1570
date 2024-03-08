@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-deployment
+  namespace: sample
+  labels:
+    name: sample-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: sample-pod
+  template:
+    metadata:
+      labels:
+        name: sample-pod
+    spec:
+      serviceAccountName: sample-svc
+      containers:
+        - name: test1
+          image: sample1570:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1994
+          env:
+            - name: "LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_KUBERNETES"
+              value: "DEBUG"

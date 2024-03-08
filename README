@@ -1,0 +1,63 @@
+1. build the docker image:
+
+   I'm on Mac M1 (thus the "-Dspring-boot.build-image.builder=dashaun/builder:tiny" argument)
+
+   -  mvn clean install -Dspring-boot.build-image.builder=dashaun/builder:tiny -DskipTests
+
+2. Check that the image exists :
+
+   - docker images | grep sample
+
+3. I'm using "kind", so create a kind cluster locally:
+
+   - kind create cluster
+
+4. load docker image into kind:
+
+   - kind load docker-image sample1570:1.0.0
+
+5. start deploying rbac:
+
+   - cd src/k8s/rbac
+   - kubectl apply -f namespace.yaml
+   - kubectl apply -f clusterrolebinding.yaml
+   - kubectl apply -f clusterrole.yaml
+   - kubectl apply -f serviceaccount.yaml
+
+6. deploy the app itself:
+
+   - cd ../manifests
+   - kubectl apply -f configmap.yaml
+   - kubectl apply -f deployment.yaml
+
+8. docker ps to find the ID of the kind container:
+
+   # specific hash related to : kindest/node:v1.21.1
+   # for example:
+   # wind57@wind57s-MacBook-Pro ~/.m2> docker ps
+   #  CONTAINER ID   IMAGE                        COMMAND                  CREATED         STATUS         PORTS                       NAMES
+   #  dfb3e5788ba9   kindest/node:v1.21.1         "/usr/local/bin/entr…"   2 minutes ago   Up 2 minutes   127.0.0.1:56339->6443/tcp   kind-control-plane
+
+   - docker ps
+
+9. docker exec into the kind cluster:
+
+   # 'dfb3e5788ba9' is the one from the above command
+   - docker exec -u 0 --privileged -it dfb3e5788ba9 bash
+
+10. find the ip of the pod running:
+
+    - kubectl get pods -o wide -n sample
+
+11. execute a call to the exposed endpoint:
+
+    - curl 10.244.0.5:1994/user/name
+
+  The output is "ER", exactly as expected.
+
+12.
+
+
+
+
+
