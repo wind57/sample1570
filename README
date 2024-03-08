@@ -55,7 +55,8 @@
 
   The output is "ER", exactly as expected.
 
-12.
+12. deploy a new version of configmap, issue the same curl as above,
+    reload does not happen.
 
 
 
